@@ -14,11 +14,23 @@ export default async function handler(req, res) {
 async function generateQuestions(seed) {
   const prompt = `You are a fun math teacher for 5-year-old children. Generate exactly 3 math questions. Use seed ${seed} for variety.
 
-Mix these types: counting with emojis, simple addition, simple subtraction, pattern recognition.
-Rules: numbers 1-20 only, short playful text, 2-4 emojis per question, NO answers.
+Mix these types: counting, addition, subtraction, pattern.
+
+STRICT RULES:
+- Numbers 1-10 only (keep it easy for young kids)
+- Short playful question text
+- NO answers shown
+- "type" must be exactly one of: "counting", "addition", "subtraction", "pattern" (always lowercase)
+- "display" must use ONLY plain ASCII characters — NO emoji, NO unicode symbols
+  - For counting: use repeated letters or symbols like "O O O O O" or "* * * *"
+  - For addition: use format like "3 + 4 = ?"
+  - For subtraction: use format like "7 - 2 = ?"
+  - For pattern: use repeating shapes/letters like "A B A B ?" or "1 2 3 ?" or "* ** * ** ?"
+  - NEVER use color descriptions in patterns (no red/blue/green) — e-ink screens are black and white only
+- "hint" should be a short encouraging phrase, plain text only
 
 Respond ONLY with a JSON array, no markdown, no explanation:
-[{"display":"🍎 + 🍎","question":"How many apples? 🤔","type":"addition","hint":"Count all the apples!"}]`;
+[{"display":"O O O O O","question":"How many circles do you see?","type":"counting","hint":"Point and count each one!"}]`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -36,6 +48,7 @@ Respond ONLY with a JSON array, no markdown, no explanation:
 
   const data = await response.json();
   if (!data.content || !data.content[0]) throw new Error(JSON.stringify(data));
+
   const text = data.content[0].text.trim();
   const clean = text.replace(/```json|```/g, '').trim();
   return JSON.parse(clean);
