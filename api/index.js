@@ -15,7 +15,7 @@ async function generateQuestions(seed) {
   const prompt = `You are a fun math teacher for 5-year-old children. Generate exactly 3 math questions. Use seed ${seed} for variety.
 
 Mix these types: counting with emojis, simple addition, simple subtraction, pattern recognition.
-Rules: numbers 1-10 only, short playful text, 2-4 emojis per question, NO answers.
+Rules: numbers 1-20 only, short playful text, 2-4 emojis per question, NO answers.
 
 Respond ONLY with a JSON array, no markdown, no explanation:
 [{"display":"🍎 + 🍎","question":"How many apples? 🤔","type":"addition","hint":"Count all the apples!"}]`;
